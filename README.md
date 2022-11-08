@@ -55,12 +55,15 @@ En primer lugar, vamos a connectarnos al TTN (Backend de LoraWAN) y vamos a crea
 2. Configuramos el broker de mqtt
 
     En la pantalla servidor pulsamos en editar. Tras esto debemos actualizar los campos para añidir el servidor (eu1.cloud.thethings.network) y el puerto (1883). 
+
     ![mqtt_broker](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_server_config.PNG)
     
     En la pestaña seguridad hay que añadir las credenciales de acceso al sensor. Estas credenciales son: Usuario (rts00001@ttn) y contraseña (<Os la diré en clase>)
+
     ![mqtt_broker_security](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_server_config_security.PNG)
 
     Finalmente, en la pestaña general (la que aparece al abrir el nodo) añadiremos # al campo Topic, para subscribirse a todos.
+
     ![mqtt_general](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_general.PNG)
 
 3. Crear un nodo debug y conectarlo al MQTT broker para ver los datos que el sensor envía
@@ -138,6 +141,7 @@ El último punto de esta práctica va a ser el despliege de los datos en una gr�
 
 1. Seguimos los mismo pasos utilizados para descargar la base de datos y añadimos el plugin node-red-dashboard
 2. Insertamos los nodos Inject, SQLite, Debug, Function y Chart
+
     ![chart_flow](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/chart_flow.PNG)
 
 3. Editamos el nodo SQLite. En SQL Query (Fixed statement) y en SQL statement (select * from sensoreshumedad;)
