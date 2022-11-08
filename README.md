@@ -1,10 +1,11 @@
 # PRÁCTICA BINOMIO AGUA Y ENERGIA
 
-En esta práctica se va a dessarrollar una plataforma IoT básica, para aprender los principales conceptos detras de esta tecnologia.
+En esta práctica se va a desarrollar una plataforma IoT básica, para aprender los principales conceptos detrás de esta tecnología.
 Se va a dividir en tres partes:
-1. Sensores: Se configurarán los sensores para enviar datos a la nube .
+1. Sensores: Se configurarán los sensores para enviar datos a la nube.
 2. BackEnd: Se configurará un servidor, desarrollado con la herramienta NodeRed, para guardar los datos de los sensores.
-3. Forntend: Se configurará una Dashboard, usando NodeRed, para mostrar los datos de los sensores
+3. Forntend: Se configurará una Dashboard, usando NodeRed, para mostrar los datos de los sensores.
+
 
                                                     Sensores
                                                         |
@@ -17,7 +18,7 @@ Se va a dividir en tres partes:
 
 ## Descarga de las herramientas necesarias
 
-En primer lugar se va a descargar NodeJS. Node es un "entorno en tiempo de ejecución" que básicamente permite ejecutar JavaScript fuera del navegador. No es necesario conocer como funciona, ya que directamente no se va a utilizar, pero es la herramienta con la que NodeRed ha sido desarrollado y con la que se pueden desarrollar plataformas profesionales. Para su descarga es necesario seguir los siguientes pasos:
+En primer lugar, se va a descargar NodeJS. Node es un "entorno en tiempo de ejecución" que básicamente permite ejecutar JavaScript fuera del navegador. No es necesario conocer cómo funciona, ya que directamente no se va a utilizar, pero es la herramienta con la que NodeRed ha sido desarrollado y con la que se pueden desarrollar plataformas profesionales. Para su descarga es necesario seguir los siguientes pasos:
 
 1. Ve a la web de NodeJS (https://nodejs.org/en/)
 2. Descarga la versión en la que pone "Recomended for most user"
@@ -25,42 +26,145 @@ En primer lugar se va a descargar NodeJS. Node es un "entorno en tiempo de ejecu
 
 ------
 
-En segundo lugar se va a descargar NodeRed. Como su web dice NodeRed "es una herramienta de programación para conectar dispositivos de hardware, API y servicios en línea de formas nuevas e interesantes". Básicamente permite la crear aplicaciones IoT mediante una interfaz muy intuitiva, sin necesidad de tener que porgramarlas. A continuación se detallan los pasos necesarios para su descarga:
+En segundo lugar, se va a descargar NodeRed. Como su web indica NodeRed "es una herramienta de programación para conectar dispositivos de hardware, API y servicios en línea de formas nuevas e interesantes". Básicamente permite la creación de aplicaciones IoT mediante una interfaz muy intuitiva, sin necesidad de tener que programarlas. A continuación, se detallan los pasos necesarios para su descarga:
 
 **PARA WINDOWS y MACOS:**
-1. Abrir el terminal de vuestro dispositivo (Aplicación simbolo del sistema en windows)
+1. Abre el terminal de tu dispositivo (Aplicación símbolo del sistema en Windows)
 2. Copia y pega el siguiente comando: `npm install -g --unsafe-perm node-red`
 
 ## Ejecutar NodeRed
-Para iniciar NodeRed en vuestro ordenador es necesario que ejecuteis el siguiente comando en el terminal de vuestro ordenador:
+Para iniciar NodeRed en vuestro ordenador es necesario que ejecutes el siguiente comando en el terminal de tu ordenador:
 `node-red`
 
-Para acceder a la aplicación tendreis que ir a vuestro navegador favorito y entrar en esta dirección http://127.0.0.1:1880/
+Para acceder a la aplicación tendrás que ir a vuestro navegador favorito y entrar en esta dirección http://127.0.0.1:1880/
 
-**Es importante que no cerreis el terminal, ya que en ese caso se desconectaría la aplicación**
+**Es importante que no cierres el terminal, ya que en ese caso se desconectaría la aplicación**
 
 # Primeros pasos con NodeRED
 
-Con NodeRED podemos crear aplicaciones de forma sencilla uniendo distintas "cajas", llamadas nodos, con funcionalidades, usando una interfaz web. Esto nos permite desarrollar servidores de forma rápida y sencilla, sin  necesidad de tener que programarlas con código.
+Con NodeRED podemos crear aplicaciones de forma sencilla uniendo distintas "cajas", llamadas nodos, con funcionalidades, usando una interfaz web. Esto nos permite desarrollar servidores de forma rápida y sencilla, sin necesidad de tener que programarlas con código.
 
-Los nodos se conectan entre si para crear un flujo de información. Por ejemplo podemos conectar los sensores con una base de datos. O bien acceder a la base de datos para representarlos de forma visual.
+Los nodos se conectan entre si para crear un flujo de información. Por ejempl,  podemos conectar los sensores con una base de datos. O bien acceder a la base de datos para representarlos de forma visual.
 
-En esta práctica vamos a crear una pequeña plataforma que va a conectarse con el backend de LoraWAN para obtener los valores que los sensores están enviando y guardarlos en una base de datos en vuestro ordenador. Finalmente se va a crear una pequeña Dasboard para mostrar estos valores.
+En esta práctica vamos a crear una pequeña plataforma que va a conectarse con el backend de LoraWAN, usando el protocolo MQTT, para obtener los valores que los sensores están enviando. Estos valores se almacenarán en una base de datos en tu ordenador. Finalmente se va a crear una pequeña Dasboard para mostrar estos valores.
 
-1. Creamos un nodo "inject"
-2. Creamos un nodo llamado "http request"
-3. Doble click sobre el y lo configuramos:
-Method: GET
-URL: https://rtsensors-backend.azurewebsites.net/api/device-app/57574/07488f5e8f54af03
-Return: "a parsed JSON object"
-4. Creamos un nodo llamado debug
-5. Unimos los tres nodos y le damos al botón de "Deploy" (Parte superior derecha)
-6. En la barra derecha seleccionamos el boton de debug.
+## CONEXION AL BACKEND DE LORAWAN
 
-Lo segundo que vamos a hacer es enviar datos desde el servidor de LoraWAN  una base de datos
-1. Creamos un nodo llamado "http in"
+En primer lugar, vamos a connectarnos al TTN (Backend de LoraWAN) y vamos a crear un flujo de datos
+1. Creamos un nodo "mqtt in"
+2. Configuramos el broker de mqtt
+
+    En la pantalla servidor pulsamos en editar. Tras esto debemos actualizar los campos para añidir el servidor (eu1.cloud.thethings.network) y el puerto (1883). 
+    ![mqtt_broker](./imagenes/mqtt_server_config.png)
+    
+    En la pestaña seguridad hay que añadir las credenciales de acceso al sensor. Estas credenciales son: Usuario (rts00001@ttn) y contraseña (<Os la diré en clase>)
+    ![mqtt_broker_security](./imagenes/mqtt_server_config_security.png)
+
+    Finalmente, en la pestaña general (la que aparece al abrir el nodo) añadiremos # al campo Topic, para subscribirse a todos.
+    ![mqtt_general](./imagenes/mqtt_general.png)
+
+3. Crear un nodo debug y conectarlo al MQTT broker para ver los datos que el sensor envía
+
+    ![mqtt_debug](./imagenes/mqtt_debug.png)
+
+4. Pulsamos el botón "Deploy" situado en la parte superior derecha
 
 
-rts00001
+Ya tendríamos nuestra primera aplicación funcionando. En la pestaña debug deben aparecer los mensajes que el sensor está enviando (cada 5 minutos).
 
+## Creacion de una base de datos para guardar los datos de los sensores.
 
+En esta parte de la práctica se va a utilizar una base de datos (DB) SQLite.  Esta base de datos es una biblioteca en lenguaje de programación C que implementa un motor de base de datos SQL pequeño, rápido, autónomo, de alta fiabilidad y con todas las funciones. Es muy utilizada para pequeñas aplicaciones debido a su facilidad de configuración.
+
+## Descarga y creacion de una tabla SQL
+1. Descarga de la librería SQLite. Para ello, pulsamos en el botón superior derecho --> Ajustes --> Paleta -->Instalar --> node-red-node-sqlite
+2. Insertamos un nodo inject, sqlite y debug y los conectamos 
+
+    ![creaction_db](./imagenes/flujo_creacion_db.png)
+
+3. Editamos el nodo SQLite. En SQL Query (Fixed statement) y en SQL statement (CREATE TABLE sensoreshumedad(id INTEGER PRIMARY KEY AUTOINCREMENT, bateria NUMERIC, humedad30cm NUMERIC, humedad45cm NUMERIC, timestamp DATE))
+
+    ![sqlite_create_table](./imagenes/sqlite_create_table.png)
+
+4. Pulsamos botón "Deploy" y pulsamos el botón de "timestamp" (nodo inject creado anteriormente)
+
+Ya tenemos nuestra base de datos y tabla creada. En el siguiente paso almacenaremos los datos de los sensores
+## Almacenar datos de los sensores en la base de datos
+
+Para almacenar los datos de los sensores debemos en primer lugar crear un nodo "funcion" que filtre la información que necesitamos.
+
+1. Creamos un nodo "función" y lo conectamos con el nodo "Broker mqtt" creado anteriormente.
+
+2. Editamos el nodo "función"y en la parte "On Message" añadimos el siguiente script:
+ ```js
+
+const mensajeSensor = msg.payload.uplink_message.decoded_payload
+const timestamp = msg.payload.uplink_message.received_at
+const bateria = mensajeSensor["field1"]/1000
+const humedad30cm = mensajeSensor["field2"]/100
+const humedad45cm = mensajeSensor["field4"]/100
+
+const payload = {
+    timestamp: timestamp,
+    bateria: bateria,
+    humedad30cm: humedad30cm,
+    humedad45cm: humedad45cm
+}
+
+const params = {
+    $timestamp: timestamp,
+    $bateria: bateria,
+    $humedad30cm: humedad30cm,
+    $humedad45cm: humedad45cm
+}
+
+return {params, payload}
+ ```
+
+Este script devolverá los valores que los sensores están enviando a través de MQTT
+
+3. Creamos un nodo "SQLite" y lo editamos. En SQL Query (**prepared statement**) y en SQL Statement (**INSERT INTO sensoreshumedad(bateria, humedad30cm, humedad45cm, timestamp) values($bateria,$humedad30cm,$humedad45cm, $timestamp)**)
+
+4. Creamos y conectamos un nodo Debug para ver los resultados. 
+
+    ![mqtt_insert_values](./imagenes/mqtt_insert_values.png)
+
+5. Pulsamos el botón Deploy
+
+En este punto tendríamos un flujo de datos que va almacenando los valores de los sensores en una base de datos.
+## Mostrar los valores en una gráfica
+
+El último punto de esta práctica va a ser el despliege de los datos en una gráfica.
+
+1. Seguimos los mismo pasos utilizados para descargar la base de datos y añadimos el plugin node-red-dashboard
+2. Insertamos los nodos Inject, SQLite, Debug, Function y Chart
+    ![chart_flow](./imagenes/chart_flow.png)
+
+3. Editamos el nodo SQLite. En SQL Query (Fixed statement) y en SQL statement (select * from sensoreshumedad;)
+4. Editamos el nodo "Fimción" y añadimos este script:
+
+```js
+
+const mensajeSensor = msg.payload
+const numeroDeDatos = mensajeSensor.length
+let cm_30_data = [];
+let cm_45_data = [];
+for(var i=0;i<numeroDeDatos; i++){
+    cm_30_data.push({ "x": mensajeSensor[i]["timestamp"], "y": mensajeSensor[i]["humedad30cm"]})
+    cm_45_data.push({ "x": mensajeSensor[i]["timestamp"], "y": mensajeSensor[i]["humedad45cm"] })
+}
+    
+
+return {
+    payload: [{
+        "series": ["huemdad30cm", "humedad45cm"],
+        "data": [cm_30_data, cm_45_data ],
+        "labels": [""]
+    }] }
+
+```
+5. Pulsamos el botón desplegar
+6. Pulsamos el botón timestamp (Inject)
+7. Accedemos, a traves de nuestro navegador, a la URL http://localhost:1880/ui
+
+Si todo ha ido bien tendremos ya nuestra aplicación completada
