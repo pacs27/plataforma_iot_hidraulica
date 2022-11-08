@@ -60,7 +60,7 @@ En primer lugar, vamos a connectarnos al TTN (Backend de LoraWAN) y vamos a crea
     
     En la pestaña seguridad hay que añadir las credenciales de acceso al sensor. Estas credenciales son: Usuario (rts00001@ttn) y contraseña (<Os la diré en clase>)
 
-    ![mqtt_broker_security](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_server_config_security.PNG)
+    ![mqtt_broker_security](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_serveR_config_security.PNG)
 
     Finalmente, en la pestaña general (la que aparece al abrir el nodo) añadiremos # al campo Topic, para subscribirse a todos.
 
