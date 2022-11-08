@@ -1,10 +1,10 @@
 # PRÁCTICA BINOMIO AGUA Y ENERGIA
 
-En esta práctica se va a desarrollar una plataforma IoT básica, para aprender los principales conceptos detrás de esta tecnología.
-Se va a dividir en tres partes:
+En esta práctica se va a desarrollar una plataforma IoT básica, para aprender los principales conceptos que hay detrás de esta tecnología.
+La práctica se va a dividir en tres partes:
 1. Sensores: Se configurarán los sensores para enviar datos a la nube.
-2. BackEnd: Se configurará un servidor, desarrollado con la herramienta NodeRed, para guardar los datos de los sensores.
-3. Forntend: Se configurará una Dashboard, usando NodeRed, para mostrar los datos de los sensores.
+2. BackEnd: Se configurará un servidor, desarrollado con la herramienta Node-Red, para almacenar los datos de los sensores.
+3. Forntend: Se configurará una Dashboard, usando Node-Red, para mostrar los datos de los sensores.
 
 
                                                     Sensores
@@ -18,7 +18,7 @@ Se va a dividir en tres partes:
 
 ## Descarga de las herramientas necesarias
 
-En primer lugar, se va a descargar NodeJS. Node es un "entorno en tiempo de ejecución" que básicamente permite ejecutar JavaScript fuera del navegador. No es necesario conocer cómo funciona, ya que directamente no se va a utilizar, pero es la herramienta con la que NodeRed ha sido desarrollado y con la que se pueden desarrollar plataformas profesionales. Para su descarga es necesario seguir los siguientes pasos:
+En primer lugar, se va a descargar NodeJS. Node es un entorno en tiempo de ejecución que básicamente permite ejecutar JavaScript fuera del navegador. No es necesario conocer cómo funciona, ya que no lo utilizaremos directamente, pero es la herramienta con la que NodeRed ha sido desarrollada y con la que se pueden desarrollar plataformas profesionales. Para su descarga es necesario seguir los siguientes pasos:
 
 1. Ve a la web de NodeJS (https://nodejs.org/en/)
 2. Descarga la versión en la que pone "Recomended for most user"
@@ -42,11 +42,11 @@ Para acceder a la aplicación tendrás que ir a vuestro navegador favorito y ent
 
 # Primeros pasos con NodeRED
 
-Con NodeRED podemos crear aplicaciones de forma sencilla uniendo distintas "cajas", llamadas nodos, con funcionalidades, usando una interfaz web. Esto nos permite desarrollar servidores de forma rápida y sencilla, sin necesidad de tener que programarlas con código.
+Con NodeRED podemos crear aplicaciones usando una interfaz web. Esto permite el desarrollo de aplicaciones de forma rápida y sencilla, sin necesidad de tener que programarlas, mediante la unión de distintas "cajas", llamadas nodos, que tienen funcionalidades específicas.
 
-Los nodos se conectan entre si para crear un flujo de información. Por ejempl,  podemos conectar los sensores con una base de datos. O bien acceder a la base de datos para representarlos de forma visual.
+Los nodos se conectan entre si para crear un flujo de información. Por ejemplo,  podemos conectar los sensores con una base de datos. O bien acceder a la base de datos para representarlos de forma visual.
 
-En esta práctica vamos a crear una pequeña plataforma que va a conectarse con el backend de LoraWAN, usando el protocolo MQTT, para obtener los valores que los sensores están enviando. Estos valores se almacenarán en una base de datos en tu ordenador. Finalmente se va a crear una pequeña Dasboard para mostrar estos valores.
+En esta práctica vamos a crear una pequeña plataforma que va a conectarse con el backend de LoraWAN, usando el protocolo MQTT, para obtener los valores que los sensores están enviando. Estos valores se almacenarán en una base de datos en tu ordenador. Finalmente se va a crear una pequeña Dashboard para mostrar estos valores.
 
 ## CONEXION AL BACKEND DE LORAWAN
 
