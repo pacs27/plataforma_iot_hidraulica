@@ -55,17 +55,17 @@ En primer lugar, vamos a connectarnos al TTN (Backend de LoraWAN) y vamos a crea
 2. Configuramos el broker de mqtt
 
     En la pantalla servidor pulsamos en editar. Tras esto debemos actualizar los campos para añidir el servidor (eu1.cloud.thethings.network) y el puerto (1883). 
-    ![mqtt_broker](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_server_config.png)
+    ![mqtt_broker](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_server_config.PNG)
     
     En la pestaña seguridad hay que añadir las credenciales de acceso al sensor. Estas credenciales son: Usuario (rts00001@ttn) y contraseña (<Os la diré en clase>)
-    ![mqtt_broker_security](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_server_config_security.png)
+    ![mqtt_broker_security](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_server_config_security.PNG)
 
     Finalmente, en la pestaña general (la que aparece al abrir el nodo) añadiremos # al campo Topic, para subscribirse a todos.
-    ![mqtt_general](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_general.png)
+    ![mqtt_general](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_general.PNG)
 
 3. Crear un nodo debug y conectarlo al MQTT broker para ver los datos que el sensor envía
 
-    ![mqtt_debug](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_debug.png)
+    ![mqtt_debug](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_debug.PNG)
 
 4. Pulsamos el botón "Deploy" situado en la parte superior derecha
 
@@ -80,11 +80,11 @@ En esta parte de la práctica se va a utilizar una base de datos (DB) SQLite.  E
 1. Descarga de la librería SQLite. Para ello, pulsamos en el botón superior derecho --> Ajustes --> Paleta -->Instalar --> node-red-node-sqlite
 2. Insertamos un nodo inject, sqlite y debug y los conectamos 
 
-    ![creaction_db](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/flujo_creacion_db.png)
+    ![creaction_db](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/flujo_creacion_db.PNG)
 
 3. Editamos el nodo SQLite. En SQL Query (Fixed statement) y en SQL statement (CREATE TABLE sensoreshumedad(id INTEGER PRIMARY KEY AUTOINCREMENT, bateria NUMERIC, humedad30cm NUMERIC, humedad45cm NUMERIC, timestamp DATE))
 
-    ![sqlite_create_table](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/sqlite_create_table.png)
+    ![sqlite_create_table](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/sqlite_create_table.PNG)
 
 4. Pulsamos botón "Deploy" y pulsamos el botón de "timestamp" (nodo inject creado anteriormente)
 
@@ -127,7 +127,7 @@ Este script devolverá los valores que los sensores están enviando a través de
 
 4. Creamos y conectamos un nodo Debug para ver los resultados. 
 
-    ![mqtt_insert_values](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_insert_values.png)
+    ![mqtt_insert_values](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_insert_values.PNG)
 
 5. Pulsamos el botón Deploy
 
@@ -138,7 +138,7 @@ El último punto de esta práctica va a ser el despliege de los datos en una gr�
 
 1. Seguimos los mismo pasos utilizados para descargar la base de datos y añadimos el plugin node-red-dashboard
 2. Insertamos los nodos Inject, SQLite, Debug, Function y Chart
-    ![chart_flow](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/chart_flow.png)
+    ![chart_flow](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/chart_flow.PNG)
 
 3. Editamos el nodo SQLite. En SQL Query (Fixed statement) y en SQL statement (select * from sensoreshumedad;)
 4. Editamos el nodo "Fimción" y añadimos este script:
