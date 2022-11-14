@@ -94,7 +94,7 @@ En esta parte de la práctica se va a utilizar una base de datos (DB) SQLite.  E
 CREATE TABLE sensoreshumedad(id INTEGER PRIMARY KEY AUTOINCREMENT, bateria NUMERIC, humedad30cm NUMERIC, humedad45cm NUMERIC, timestamp DATE)
 ```
 
-    ![sqlite_create_table](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/sqlite_create_table.PNG)
+![sqlite_create_table](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/sqlite_create_table.PNG)
 
 5. Pulsamos botón "Deploy" y pulsamos el botón de "timestamp" (nodo inject creado anteriormente)
 
@@ -140,9 +140,9 @@ INSERT INTO sensoreshumedad(bateria, humedad30cm, humedad45cm, timestamp) values
 
 4. Creamos y conectamos un nodo Debug para ver los resultados. 
 
-    ![mqtt_insert_values](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_insert_values.PNG)
+![mqtt_insert_values](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/mqtt_insert_values.PNG)
 
-5. Pulsamos el botón Deploy
+5. Pulsamos el botón "Deploy"
 
 En este punto tendríamos un flujo de datos que va almacenando los valores de los sensores en una base de datos.
 ## Mostrar los valores en una gráfica
@@ -152,7 +152,7 @@ El último punto de esta práctica va a ser el despliege de los datos en una gr�
 1. Seguimos los mismo pasos utilizados para descargar la base de datos y añadimos el plugin node-red-dashboard
 2. Insertamos los nodos Inject, SQLite, Debug, Function y Chart
 
-    ![chart_flow](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/chart_flow.PNG)
+![chart_flow](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/chart_flow.PNG)
 
 3. Editamos el nodo SQLite. En SQL Query (Fixed statement) y en SQL statement insertamos lo siguiente:
 
