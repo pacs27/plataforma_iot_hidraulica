@@ -1,0 +1,312 @@
+[
+    {
+        "id": "e4bcfcd2e50289a8",
+        "type": "mqtt in",
+        "z": "ed4eba4abb3f93eb",
+        "name": "",
+        "topic": "#",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "c06870eca6f006bd",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "68b842704871b563",
+                "bfa39a25850fcea9"
+            ]
+        ]
+    },
+    {
+        "id": "68b842704871b563",
+        "type": "debug",
+        "z": "ed4eba4abb3f93eb",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 380,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "3427a2b93afc7783",
+        "type": "sqlite",
+        "z": "ed4eba4abb3f93eb",
+        "mydb": "2bc410280e7dfeff",
+        "sqlquery": "fixed",
+        "sql": "CREATE TABLE sensoreshumedad(id INTEGER PRIMARY KEY AUTOINCREMENT, bateria NUMERIC, humedad30cm NUMERIC, humedad45cm NUMERIC, timestamp DATE)",
+        "name": "crear tabla",
+        "x": 390,
+        "y": 100,
+        "wires": [
+            [
+                "ad6aeae07edb6abb"
+            ]
+        ]
+    },
+    {
+        "id": "9f4649b745e87a0a",
+        "type": "inject",
+        "z": "ed4eba4abb3f93eb",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "3427a2b93afc7783"
+            ]
+        ]
+    },
+    {
+        "id": "ad6aeae07edb6abb",
+        "type": "debug",
+        "z": "ed4eba4abb3f93eb",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "bfa39a25850fcea9",
+        "type": "function",
+        "z": "ed4eba4abb3f93eb",
+        "name": "function 1",
+        "func": "\nconst mensajeSensor = msg.payload.uplink_message.decoded_payload\nconst timestamp = msg.payload.uplink_message.received_at\nconst bateria = mensajeSensor[\"field1\"] / 1000\nconst humedad30cm = mensajeSensor[\"field2\"] / 100\nconst humedad45cm = mensajeSensor[\"field4\"] / 100\n\nconst payload = {\n    timestamp: timestamp,\n    bateria: bateria,\n    humedad30cm: humedad30cm,\n    humedad45cm: humedad45cm\n}\n\nconst params = {\n    $timestamp: timestamp,\n    $bateria: bateria,\n    $humedad30cm: humedad30cm,\n    $humedad45cm: humedad45cm\n}\n\nreturn { params, payload }",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 340,
+        "wires": [
+            [
+                "d7da3fcc87f8584d"
+            ]
+        ]
+    },
+    {
+        "id": "d7da3fcc87f8584d",
+        "type": "sqlite",
+        "z": "ed4eba4abb3f93eb",
+        "mydb": "2bc410280e7dfeff",
+        "sqlquery": "fixed",
+        "sql": "INSERT INTO sensoreshumedad(bateria, humedad30cm, humedad45cm, timestamp) values($bateria,$humedad30cm,$humedad45cm, $timestamp)",
+        "name": "",
+        "x": 630,
+        "y": 340,
+        "wires": [
+            [
+                "e774397186938231"
+            ]
+        ]
+    },
+    {
+        "id": "e774397186938231",
+        "type": "debug",
+        "z": "ed4eba4abb3f93eb",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "cc0215c13bdc5f56",
+        "type": "ui_chart",
+        "z": "ed4eba4abb3f93eb",
+        "name": "",
+        "group": "aebad4fd75ece495",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "chart",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 790,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3f916138ce742658",
+        "type": "sqlite",
+        "z": "ed4eba4abb3f93eb",
+        "mydb": "2bc410280e7dfeff",
+        "sqlquery": "fixed",
+        "sql": "select * from sensoreshumedad;\n",
+        "name": "",
+        "x": 350,
+        "y": 440,
+        "wires": [
+            [
+                "ad5effbb028e197e"
+            ]
+        ]
+    },
+    {
+        "id": "9a8f5df0d18a1ff5",
+        "type": "inject",
+        "z": "ed4eba4abb3f93eb",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 440,
+        "wires": [
+            [
+                "3f916138ce742658"
+            ]
+        ]
+    },
+    {
+        "id": "ad5effbb028e197e",
+        "type": "function",
+        "z": "ed4eba4abb3f93eb",
+        "name": "function 2",
+        "func": "const mensajeSensor = msg.payload\nconst numeroDeDatos = mensajeSensor.length\nlet cm_30_data = [];\nlet cm_45_data = [];\nfor (var i = 0; i < numeroDeDatos; i++) {\n    cm_30_data.push({ \"x\": mensajeSensor[i][\"timestamp\"], \"y\": mensajeSensor[i][\"humedad30cm\"] })\n    cm_45_data.push({ \"x\": mensajeSensor[i][\"timestamp\"], \"y\": mensajeSensor[i][\"humedad45cm\"] })\n}\n\n\nreturn {\n    payload: [{\n        \"series\": [\"huemdad30cm\", \"humedad45cm\"],\n        \"data\": [cm_30_data, cm_45_data],\n        \"labels\": [\"\"]\n    }]\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 440,
+        "wires": [
+            [
+                "cc0215c13bdc5f56"
+            ]
+        ]
+    },
+    {
+        "id": "c06870eca6f006bd",
+        "type": "mqtt-broker",
+        "name": "TTN_BROKER",
+        "broker": "eu1.cloud.thethings.network",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "2bc410280e7dfeff",
+        "type": "sqlitedb",
+        "db": "/tmp/sqlite",
+        "mode": "RWC"
+    },
+    {
+        "id": "aebad4fd75ece495",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "3a217d0ff51099d0",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "3a217d0ff51099d0",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
