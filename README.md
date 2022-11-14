@@ -85,11 +85,18 @@ En esta parte de la práctica se va a utilizar una base de datos (DB) SQLite.  E
 
     ![creaction_db](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/flujo_creacion_db.PNG)
 
-3. Editamos el nodo SQLite. En SQL Query (Fixed statement) y en SQL statement (CREATE TABLE sensoreshumedad(id INTEGER PRIMARY KEY AUTOINCREMENT, bateria NUMERIC, humedad30cm NUMERIC, humedad45cm NUMERIC, timestamp DATE))
+3. Editamos el nodo SQLite y añadimos una nueva base de datos. En "Database" añadimos una nueva llamada "/tmp/sqlite"
+ ![creaction_db](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/create_new_database.PNG)
+
+4. Volvemos a editar el nodo SQLite. En SQL Query (Fixed statement) y en SQL statement añadimos lo siguiente:
+
+```sql
+CREATE TABLE sensoreshumedad(id INTEGER PRIMARY KEY AUTOINCREMENT, bateria NUMERIC, humedad30cm NUMERIC, humedad45cm NUMERIC, timestamp DATE)
+```
 
     ![sqlite_create_table](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/sqlite_create_table.PNG)
 
-4. Pulsamos botón "Deploy" y pulsamos el botón de "timestamp" (nodo inject creado anteriormente)
+5. Pulsamos botón "Deploy" y pulsamos el botón de "timestamp" (nodo inject creado anteriormente)
 
 Ya tenemos nuestra base de datos y tabla creada. En el siguiente paso almacenaremos los datos de los sensores
 ## Almacenar datos de los sensores en la base de datos
@@ -126,7 +133,10 @@ return {params, payload}
 
 Este script devolverá los valores que los sensores están enviando a través de MQTT
 
-3. Creamos un nodo "SQLite" y lo editamos. En SQL Query (**prepared statement**) y en SQL Statement (**INSERT INTO sensoreshumedad(bateria, humedad30cm, humedad45cm, timestamp) values($bateria,$humedad30cm,$humedad45cm, $timestamp)**)
+3. Creamos un nodo "SQLite" y lo editamos. En SQL Query (**prepared statement**) y en SQL Statement insertamos lo siguiente:
+```sql
+INSERT INTO sensoreshumedad(bateria, humedad30cm, humedad45cm, timestamp) values($bateria,$humedad30cm,$humedad45cm, $timestamp)
+```
 
 4. Creamos y conectamos un nodo Debug para ver los resultados. 
 
@@ -144,8 +154,12 @@ El último punto de esta práctica va a ser el despliege de los datos en una gr�
 
     ![chart_flow](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/chart_flow.PNG)
 
-3. Editamos el nodo SQLite. En SQL Query (Fixed statement) y en SQL statement (select * from sensoreshumedad;)
-4. Editamos el nodo "Fimción" y añadimos este script:
+3. Editamos el nodo SQLite. En SQL Query (Fixed statement) y en SQL statement insertamos lo siguiente:
+
+```sql
+select * from sensoreshumedad;
+```
+4. Editamos el nodo "Función" y añadimos este script:
 
 ```js
 
@@ -167,8 +181,12 @@ return {
     }] }
 
 ```
-5. Pulsamos el botón desplegar
-6. Pulsamos el botón timestamp (Inject)
-7. Accedemos, a traves de nuestro navegador, a la URL http://localhost:1880/ui
+5. Editamos el nodo "chart". Añadimos un nuevo grupo de gráficas y dentro del grupo de gráficas un nuevo "tab".
 
-Si todo ha ido bien tendremos ya nuestra aplicación completada
+![edit_chart](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/edit_chart.png)
+
+6. Pulsamos el botón desplegar
+7. Pulsamos el botón timestamp (Inject)
+8. Accedemos, a traves de nuestro navegador, a la URL http://localhost:1880/ui
+
+Si todo ha ido bien, tendremos nuestra aplicación IoT funcionando.
