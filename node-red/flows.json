@@ -3,7 +3,7 @@
         "id": "e4bcfcd2e50289a8",
         "type": "mqtt in",
         "z": "ed4eba4abb3f93eb",
-        "name": "",
+        "name": "LORAWAN MQTT BROKER",
         "topic": "#",
         "qos": "2",
         "datatype": "auto-detect",
@@ -12,7 +12,7 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 150,
+        "x": 140,
         "y": 260,
         "wires": [
             [
@@ -33,7 +33,7 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 380,
+        "x": 400,
         "y": 260,
         "wires": []
     },
@@ -45,7 +45,7 @@
         "sqlquery": "fixed",
         "sql": "CREATE TABLE sensoreshumedad(id INTEGER PRIMARY KEY AUTOINCREMENT, bateria NUMERIC, humedad30cm NUMERIC, humedad45cm NUMERIC, timestamp DATE)",
         "name": "crear tabla",
-        "x": 390,
+        "x": 350,
         "y": 100,
         "wires": [
             [
@@ -74,7 +74,7 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 140,
+        "x": 100,
         "y": 100,
         "wires": [
             [
@@ -102,18 +102,19 @@
         "id": "bfa39a25850fcea9",
         "type": "function",
         "z": "ed4eba4abb3f93eb",
-        "name": "function 1",
-        "func": "\nconst mensajeSensor = msg.payload.uplink_message.decoded_payload\nconst timestamp = msg.payload.uplink_message.received_at\nconst bateria = mensajeSensor[\"field1\"] / 1000\nconst humedad30cm = mensajeSensor[\"field2\"] / 100\nconst humedad45cm = mensajeSensor[\"field4\"] / 100\n\nconst payload = {\n    timestamp: timestamp,\n    bateria: bateria,\n    humedad30cm: humedad30cm,\n    humedad45cm: humedad45cm\n}\n\nconst params = {\n    $timestamp: timestamp,\n    $bateria: bateria,\n    $humedad30cm: humedad30cm,\n    $humedad45cm: humedad45cm\n}\n\nreturn { params, payload }",
+        "name": "Adaptar datos",
+        "func": "// Se obtiene el mensaje que ha enviado el sensor\nconst mensajeSensor = msg.payload.uplink_message.decoded_payload\nconst timestamp = msg.payload.uplink_message.received_at\n\n// Se guardan los valores en variables\nconst bateria = mensajeSensor[\"field1\"] / 1000\nconst humedad30cm = mensajeSensor[\"field2\"] / 100\nconst humedad45cm = mensajeSensor[\"field4\"] / 100\n\n\n// Se preparan las variables para utilizarlas en el siguiente nodo.\nconst params = {\n    $timestamp: timestamp,\n    $bateria: bateria,\n    $humedad30cm: humedad30cm,\n    $humedad45cm: humedad45cm\n}\n\n\nreturn { params }",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 400,
+        "x": 420,
         "y": 340,
         "wires": [
             [
-                "d7da3fcc87f8584d"
+                "d7da3fcc87f8584d",
+                "b4e0f990dce59310"
             ]
         ]
     },
@@ -122,10 +123,10 @@
         "type": "sqlite",
         "z": "ed4eba4abb3f93eb",
         "mydb": "2bc410280e7dfeff",
-        "sqlquery": "fixed",
+        "sqlquery": "prepared",
         "sql": "INSERT INTO sensoreshumedad(bateria, humedad30cm, humedad45cm, timestamp) values($bateria,$humedad30cm,$humedad45cm, $timestamp)",
-        "name": "",
-        "x": 630,
+        "name": "Guardar valores",
+        "x": 660,
         "y": 340,
         "wires": [
             [
@@ -145,7 +146,7 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 840,
+        "x": 860,
         "y": 340,
         "wires": []
     },
@@ -187,8 +188,8 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 790,
-        "y": 440,
+        "x": 810,
+        "y": 540,
         "wires": [
             []
         ]
@@ -200,12 +201,13 @@
         "mydb": "2bc410280e7dfeff",
         "sqlquery": "fixed",
         "sql": "select * from sensoreshumedad;\n",
-        "name": "",
-        "x": 350,
-        "y": 440,
+        "name": "Seleccionar Valores",
+        "x": 330,
+        "y": 540,
         "wires": [
             [
-                "ad5effbb028e197e"
+                "ad5effbb028e197e",
+                "024f552e640b44fe"
             ]
         ]
     },
@@ -231,7 +233,7 @@
         "payload": "",
         "payloadType": "date",
         "x": 100,
-        "y": 440,
+        "y": 540,
         "wires": [
             [
                 "3f916138ce742658"
@@ -242,20 +244,281 @@
         "id": "ad5effbb028e197e",
         "type": "function",
         "z": "ed4eba4abb3f93eb",
-        "name": "function 2",
-        "func": "const mensajeSensor = msg.payload\nconst numeroDeDatos = mensajeSensor.length\nlet cm_30_data = [];\nlet cm_45_data = [];\nfor (var i = 0; i < numeroDeDatos; i++) {\n    cm_30_data.push({ \"x\": mensajeSensor[i][\"timestamp\"], \"y\": mensajeSensor[i][\"humedad30cm\"] })\n    cm_45_data.push({ \"x\": mensajeSensor[i][\"timestamp\"], \"y\": mensajeSensor[i][\"humedad45cm\"] })\n}\n\n\nreturn {\n    payload: [{\n        \"series\": [\"huemdad30cm\", \"humedad45cm\"],\n        \"data\": [cm_30_data, cm_45_data],\n        \"labels\": [\"\"]\n    }]\n}",
+        "name": "Adaptar datos",
+        "func": "// Se obtienen los datos que ha enviado el sensor\nconst sensorDatos = msg.payload\n\n\nconst numeroDeDatos = sensorDatos.length\nlet cm_30_data = [];\nlet cm_45_data = [];\n\n// Se crean los arrays que van a almacenar los datos de humedad de los sensores instalados a 30 y 45cm\nfor (var i = 0; i < numeroDeDatos; i++) {\n\n    cm_30_data.push({ \"x\": sensorDatos[i][\"timestamp\"], \"y\": sensorDatos[i][\"humedad30cm\"] })\n    cm_45_data.push({ \"x\": sensorDatos[i][\"timestamp\"], \"y\": sensorDatos[i][\"humedad45cm\"] })\n}\n\n\n// Se adaptan los datos al formato de las gráficas. \nconst payload = [\n    {\n        series: [\"huemdad30cm\", \"humedad45cm\"],\n        data: [cm_30_data, cm_45_data],\n        labels: [\"\"],\n    },\n]\n\n// Se envía el mensaje\nreturn {\n    payload\n};",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 580,
-        "y": 440,
+        "y": 540,
         "wires": [
             [
-                "cc0215c13bdc5f56"
+                "cc0215c13bdc5f56",
+                "cb73da6ab4b2d9b0"
             ]
         ]
+    },
+    {
+        "id": "23ff6fbaebc83a5b",
+        "type": "http request",
+        "z": "ed4eba4abb3f93eb",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://rtsensors-backend.azurewebsites.net/api/device-app/57574/07488f5e8f54af03/?start=2022-10-30T16:06:15.5820000Z&end=2022-11-14T16:06:15.5820000Z",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 310,
+        "y": 720,
+        "wires": [
+            [
+                "fe3a70b6ccb795b9",
+                "07de7cbcbae69b6b"
+            ]
+        ]
+    },
+    {
+        "id": "5ef7c09326e8b49a",
+        "type": "inject",
+        "z": "ed4eba4abb3f93eb",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 720,
+        "wires": [
+            [
+                "23ff6fbaebc83a5b"
+            ]
+        ]
+    },
+    {
+        "id": "fe3a70b6ccb795b9",
+        "type": "debug",
+        "z": "ed4eba4abb3f93eb",
+        "name": "debug 4",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 560,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "07de7cbcbae69b6b",
+        "type": "function",
+        "z": "ed4eba4abb3f93eb",
+        "name": "Adaptar datos",
+        "func": "// Se obtienen los datos que nos devuelve la API\nconst platformMessage = msg.payload;\n\n// Se crea un ARRAY con los datos del sensor de 30cm\nlet cm_30_data = platformMessage.telemetry.map((telemtry_item) => {\n    return { x: telemtry_item[\"timestamp\"], y: telemtry_item.field2 };\n});\n\n// Se crea un ARRAY con los datos del sensor de 45cm\nlet cm_45_data = platformMessage.telemetry.map((telemtry_item) => {\n    return { x: telemtry_item[\"timestamp\"], y: telemtry_item.field4 };\n});\n\n// Se adaptan los datos al formato de las gráficas. \nconst payload = [\n    {\n        series: [\"huemdad30cm\", \"humedad45cm\"],\n        data: [cm_30_data, cm_45_data],\n        labels: [\"\"],\n    },\n]\n\n// Se envía el mensaje\nreturn {\n    payload\n};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 820,
+        "wires": [
+            [
+                "887068a5354672a8",
+                "f22628744e3a6e27"
+            ]
+        ]
+    },
+    {
+        "id": "887068a5354672a8",
+        "type": "ui_chart",
+        "z": "ed4eba4abb3f93eb",
+        "name": "",
+        "group": "aebad4fd75ece495",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "sensor historico",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 840,
+        "y": 820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f22628744e3a6e27",
+        "type": "debug",
+        "z": "ed4eba4abb3f93eb",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "cb73da6ab4b2d9b0",
+        "type": "debug",
+        "z": "ed4eba4abb3f93eb",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "024f552e640b44fe",
+        "type": "debug",
+        "z": "ed4eba4abb3f93eb",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 560,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "b4e0f990dce59310",
+        "type": "debug",
+        "z": "ed4eba4abb3f93eb",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "d73a603ce9c1e482",
+        "type": "sqlite",
+        "z": "ed4eba4abb3f93eb",
+        "mydb": "2bc410280e7dfeff",
+        "sqlquery": "fixed",
+        "sql": "DROP TABLE sensoreshumedad;",
+        "name": "eliminar tabla",
+        "x": 360,
+        "y": 160,
+        "wires": [
+            [
+                "7e8c9005565d419f"
+            ]
+        ]
+    },
+    {
+        "id": "e7266a9f2d017a2f",
+        "type": "inject",
+        "z": "ed4eba4abb3f93eb",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 160,
+        "wires": [
+            [
+                "d73a603ce9c1e482"
+            ]
+        ]
+    },
+    {
+        "id": "7e8c9005565d419f",
+        "type": "debug",
+        "z": "ed4eba4abb3f93eb",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 160,
+        "wires": []
     },
     {
         "id": "c06870eca6f006bd",

@@ -108,19 +108,17 @@ Para almacenar los datos de los sensores debemos en primer lugar crear un nodo "
 2. Editamos el nodo "función"y en la parte "On Message" añadimos el siguiente script:
  ```js
 
+// Se obtiene el mensaje que ha enviado el sensor
 const mensajeSensor = msg.payload.uplink_message.decoded_payload
 const timestamp = msg.payload.uplink_message.received_at
-const bateria = mensajeSensor["field1"]/1000
-const humedad30cm = mensajeSensor["field2"]/100
-const humedad45cm = mensajeSensor["field4"]/100
 
-const payload = {
-    timestamp: timestamp,
-    bateria: bateria,
-    humedad30cm: humedad30cm,
-    humedad45cm: humedad45cm
-}
+// Se guardan los valores en variables
+const bateria = mensajeSensor["field1"] / 1000
+const humedad30cm = mensajeSensor["field2"] / 100
+const humedad45cm = mensajeSensor["field4"] / 100
 
+
+// Se preparan las variables para utilizarlas en el siguiente nodo.
 const params = {
     $timestamp: timestamp,
     $bateria: bateria,
@@ -128,7 +126,7 @@ const params = {
     $humedad45cm: humedad45cm
 }
 
-return {params, payload}
+return { params }
  ```
 
 Este script devolverá los valores que los sensores están enviando a través de MQTT
@@ -154,7 +152,7 @@ El último punto de esta práctica va a ser el despliege de los datos en una gr�
 
 ![chart_flow](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/chart_flow.PNG)
 
-3. Editamos el nodo SQLite. En SQL Query (Fixed statement) y en SQL statement insertamos lo siguiente:
+3. Editamos el nodo SQLite. En SQL Query (**Fixed statement**) y en SQL statement insertamos lo siguiente:
 
 ```sql
 select * from sensoreshumedad;
@@ -162,23 +160,35 @@ select * from sensoreshumedad;
 4. Editamos el nodo "Función" y añadimos este script:
 
 ```js
+// Se obtienen los datos que ha enviado el sensor
+const sensorDatos = msg.payload
 
-const mensajeSensor = msg.payload
-const numeroDeDatos = mensajeSensor.length
+
+const numeroDeDatos = sensorDatos.length
 let cm_30_data = [];
 let cm_45_data = [];
-for(var i=0;i<numeroDeDatos; i++){
-    cm_30_data.push({ "x": mensajeSensor[i]["timestamp"], "y": mensajeSensor[i]["humedad30cm"]})
-    cm_45_data.push({ "x": mensajeSensor[i]["timestamp"], "y": mensajeSensor[i]["humedad45cm"] })
-}
-    
 
+// Se crean los arrays que van a almacenar los datos de humedad de los sensores instalados a 30 y 45cm
+for (var i = 0; i < numeroDeDatos; i++) {
+
+    cm_30_data.push({ "x": sensorDatos[i]["timestamp"], "y": sensorDatos[i]["humedad30cm"] })
+    cm_45_data.push({ "x": sensorDatos[i]["timestamp"], "y": sensorDatos[i]["humedad45cm"] })
+}
+
+
+// Se adaptan los datos al formato de las gráficas. 
+const payload = [
+    {
+        series: ["huemdad30cm", "humedad45cm"],
+        data: [cm_30_data, cm_45_data],
+        labels: [""],
+    },
+]
+
+// Se envía el mensaje
 return {
-    payload: [{
-        "series": ["huemdad30cm", "humedad45cm"],
-        "data": [cm_30_data, cm_45_data ],
-        "labels": [""]
-    }] }
+    payload
+};
 
 ```
 5. Editamos el nodo "chart". Añadimos un nuevo grupo de gráficas y dentro del grupo de gráficas un nuevo "tab".
@@ -190,3 +200,50 @@ return {
 8. Accedemos, a traves de nuestro navegador, a la URL http://localhost:1880/ui
 
 Si todo ha ido bien, tendremos nuestra aplicación IoT funcionando.
+
+## Conectarnos a otra aplicación
+
+Por último, vamos a conectarnos a otra aplicación. Para ello es necesario seguir los siguientes pasos:
+
+1. Creamos los siguientes nodos  y los conectamos: "inject", "http request", "function", "chart"
+
+![api_conexion](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/conexion_plataforma_terceros.png)
+
+2. Editamos el nodo "http request" y añadimos la siguiente URL (https://rtsensors-backend.azurewebsites.net/api/device-app/57574/07488f5e8f54af03/?start=2022-10-30T16:06:15.5820000Z&end=2022-11-14T16:06:15.5820000Z)
+
+![HTTP_GET](https://github.com/pacs27/plataforma_iot_hidraulica/blob/master/imagenes/HTTP_GET.png)
+
+3. Editamos el nodo "Function" y le añadimos el siguiente código:
+
+```js
+// Se obtienen los datos que nos devuelve la API
+const platformMessage = msg.payload;
+
+// Se crea un ARRAY con los datos del sensor de 30cm
+let cm_30_data = platformMessage.telemetry.map((telemtry_item) => {
+    return { x: telemtry_item["timestamp"], y: telemtry_item.field2 };
+});
+
+// Se crea un ARRAY con los datos del sensor de 45cm
+let cm_45_data = platformMessage.telemetry.map((telemtry_item) => {
+    return { x: telemtry_item["timestamp"], y: telemtry_item.field4 };
+});
+
+// Se adaptan los datos al formato de las gráficas. 
+const payload = [
+    {
+        series: ["huemdad30cm", "humedad45cm"],
+        data: [cm_30_data, cm_45_data],
+        labels: [""],
+    },
+]
+
+// Se envía el mensaje
+return {
+    payload
+};
+
+```
+6. Pulsamos el botón desplegar
+7. Pulsamos el botón timestamp (Inject)
+8. Ver los resultados en: http://localhost:1880/ui
