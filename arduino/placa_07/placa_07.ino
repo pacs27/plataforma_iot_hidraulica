@@ -1,15 +1,18 @@
+// PLACA 07
+// SENSOR TEROS 12; ID:0002
+
 #include <SDI12.h>
 #include <MKRWAN.h>
 
 // Hardware Pin definitions
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-const byte SDI12_JACK1 = 6; // SDI-12 SENSORS
+const byte SDI12_JACK1 = 5; // SDI-12 SENSORS
 
 // Lorawan Config
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 LoRaModem modem;
-String appEui = "XXXXXXXXXXXXXXXX"; 
-String appKey = "XXXXXXXXXXXXXXXX"; 
+String appEui = "4585684625446682"; 
+String appKey = "0BEAFB0CAC2E499DA447113A0A261847"; 
 
 // SDI12 CONFIG
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -90,6 +93,8 @@ void loop()
     Serial.print("CE = ");
     Serial.println(teros_ec);
 
+    Serial.println("Enviando mensaje...");
+
     char msg[6];
     msg[0] = ((teros_humidity) >> 8) & 0xFF;
     msg[1] = (teros_humidity)&0xFF;
@@ -99,14 +104,16 @@ void loop()
     msg[5] = (teros_ec)&0xFF;
 
     int err;
+    
 
     modem.beginPacket();
     // modem.print(total);
     modem.write(msg, 6);
-    //  False: DONT RECIVE A RESPONSE
     err = modem.endPacket(false);
+    Serial.println("Mensaje enviado, 20 segundos de delay.");
+    Serial.println("");
 
-    delay(2000);
+    delay(20000);
 }
 
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
