@@ -1,5 +1,9 @@
 # PRÁCTICA BINOMIO AGUA Y ENERGIA
 
+Sensor 19: 
+usuario: rts0019@ttn
+key:NNSXS.5GINT363OWAAAZJJV6F626FE53VUE73X2YUFV3Y.4YAGG4FTXRRYFRORPHEXK5L3S7MMTBVU363DMOVNX4FIB65Y4QKA
+
 En esta práctica se va a desarrollar una plataforma IoT básica, para aprender los principales conceptos que hay detrás de esta tecnología.
 La práctica se va a dividir en tres partes:
 1. Sensores: Se configurarán los sensores para enviar datos a la nube.
